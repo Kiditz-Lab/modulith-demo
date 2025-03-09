@@ -1,0 +1,5 @@
+CREATE TABLE inventory(
+    id SERIAL PRIMARY KEY,
+    sku VARCHAR(20) NOT NULL UNIQUE,
+    quantity INT NOT NULL DEFAULT 0
+)

@@ -5,7 +5,7 @@ CREATE TABLE orders (
 
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
-    sku TEXT NOT NULL,
+    sku VARCHAR(20) NOT NULL UNIQUE,
     quantity INT NOT NULL,
     orders INT references orders(id)
 );

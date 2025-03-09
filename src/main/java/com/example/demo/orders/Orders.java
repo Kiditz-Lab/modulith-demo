@@ -18,7 +18,7 @@ class Orders {
 	void placed(OrderPlacedCommand command) {
 		Set<LineItem> itemSet = command.items().stream().map(item -> new LineItem(null, item.sku(), item.quantity())).collect(Collectors.toSet());
 		var order = new Order(null, itemSet, OrderStatus.PENDING);
-		repository.save(order);
+		order = repository.save(order);
 		publisher.publishEvent(new OrderPlacedEvent(order.id(), command.items()));
 	}
 }

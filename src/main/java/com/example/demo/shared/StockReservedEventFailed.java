@@ -1,4 +1,4 @@
-package com.example.demo.inventories;
+package com.example.demo.shared;
 
 public record StockReservedEventFailed(Long orderId,  String reason) {
 }

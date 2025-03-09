@@ -1,13 +1,13 @@
 package com.example.demo.inventories;
 
-import com.example.demo.orders.LineItemDto;
-import com.example.demo.orders.OrderPlacedEvent;
+import com.example.demo.shared.LineItemDto;
+import com.example.demo.shared.OrderPlacedEvent;
+import com.example.demo.shared.StockReservedEvent;
+import com.example.demo.shared.StockReservedEventFailed;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.modulith.events.ApplicationModuleListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

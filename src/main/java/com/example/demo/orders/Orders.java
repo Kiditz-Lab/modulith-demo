@@ -1,7 +1,8 @@
 package com.example.demo.orders;
 
-import com.example.demo.inventories.StockReservedEvent;
-import com.example.demo.inventories.StockReservedEventFailed;
+import com.example.demo.shared.OrderPlacedEvent;
+import com.example.demo.shared.StockReservedEvent;
+import com.example.demo.shared.StockReservedEventFailed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

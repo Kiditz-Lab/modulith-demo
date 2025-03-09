@@ -4,7 +4,7 @@ import com.example.demo.shared.LineItemDto;
 import com.example.demo.shared.OrderPlacedEvent;
 import com.example.demo.shared.StockReservedEvent;
 import com.example.demo.shared.StockReservedEventFailed;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.modulith.events.ApplicationModuleListener;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 @Slf4j
 class Inventories {
@@ -33,9 +33,8 @@ class Inventories {
 	}
 
 	InventoryDto adjustStock(AdjustStockCommand command) {
-		var inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
 		repository.adjustStockBySku(command.sku(), command.quantity());
-		inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
+		var inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
 		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
 	}
 

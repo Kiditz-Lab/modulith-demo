@@ -1,68 +1,111 @@
 plugins {
-	id 'java'
-	id 'jacoco'
-	id 'org.springframework.boot' version '3.4.3'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.graalvm.buildtools.native' version '0.10.5'
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.graalvm.buildtools.native' version '0.10.5'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('springModulithVersion', "1.3.3")
+    set('springModulithVersion', "1.3.3")
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.modulith:spring-modulith-events-api'
-	implementation 'org.springframework.modulith:spring-modulith-starter-core'
-	implementation 'org.springframework.modulith:spring-modulith-starter-jdbc'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.flywaydb:flyway-database-postgresql'
-	testImplementation 'net.datafaker:datafaker:2.4.2'
+    // Main application dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.modulith:spring-modulith-events-api'
+    implementation 'org.springframework.modulith:spring-modulith-starter-core'
+    implementation 'org.springframework.modulith:spring-modulith-starter-jdbc'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
+    runtimeOnly 'org.springframework.modulith:spring-modulith-events-amqp'
+//    runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
 
-	runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
-	runtimeOnly 'org.springframework.modulith:spring-modulith-events-amqp'
-	runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
+    // Unit test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'net.datafaker:datafaker:2.4.2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.amqp:spring-rabbit-test'
-	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
+    // Integration test dependencies (separate)
+//    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+//    integrationTestImplementation 'org.testcontainers:postgresql:1.19.3'
 
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
+    }
 }
+//
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs = ['src/main/java']
+//        }
+//    }
+//
+//    integrationTest {
+//        java.srcDir 'src/integrationTest/java'
+//        resources.srcDir 'src/integrationTest/resources'
+//
+//        // Ensure it includes main output
+//        compileClasspath += sourceSets.main.output + sourceSets.test.output
+//        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+//    }
+//
+//}
 
+
+//tasks.register('integrationTest', Test) {
+//    description = 'Runs integration tests'
+//    group = 'verification'
+//    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+//    classpath = sourceSets.integrationTest.runtimeClasspath
+//    shouldRunAfter test
+//}
+
+
+// Ensure that `check` runs both unit and integration tests
+//check.dependsOn integrationTest
+
+// Configure unit test task
 test {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
+// Ensure JaCoCo report is generated
 jacocoTestReport {
-	dependsOn test
+    dependsOn test
 }

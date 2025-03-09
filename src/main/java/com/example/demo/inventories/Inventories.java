@@ -1,0 +1,33 @@
+package com.example.demo.inventories;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@AllArgsConstructor
+@Transactional
+@Slf4j
+class Inventories {
+	private final InventoryRepository repository;
+
+
+	InventoryDto updateStock(UpdateStockCommand command) {
+		var inventory = repository.findBySku(command.sku()).orElse(new Inventory(null, command.sku(), command.quantity()));
+		if (inventory.id() == null) {
+			inventory = repository.save(inventory);
+		} else {
+			repository.updateStockBySku(command.sku(), command.quantity());
+			inventory = repository.findBySku(command.sku()).orElse(new Inventory(null, command.sku(), command.quantity()));
+		}
+		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
+	}
+
+	InventoryDto adjustStock(AdjustStockCommand command) {
+		var inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
+		repository.adjustStockBySku(command.sku(), command.quantity());
+		inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
+		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
+	}
+}

@@ -47,7 +47,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
     runtimeOnly 'org.springframework.modulith:spring-modulith-events-amqp'
-    runtimeOnly 'org.springframework.modulith:spring-modulith-starter-insight'
+//    runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
 
     // Unit test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

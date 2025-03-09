@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.Set;
 
 @Table("orders")
-record Order(@Id Long id, Set<LineItem> items, OrderStatus status) {
+record Order(@Id Long id, Set<LineItem> items, OrderStatus status, String reason) {
 }
 
 enum OrderStatus {

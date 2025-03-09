@@ -10,10 +10,10 @@ interface InventoryRepository extends CrudRepository<Inventory, Long> {
 	Optional<Inventory> findBySku(String sku);
 	@Modifying
 	@Query("UPDATE inventory SET quantity = :quantity WHERE sku = :sku")
-	int updateStockBySku(String sku, int quantity);
+	void updateStockBySku(String sku, int quantity);
 
 	@Modifying
 	@Query("UPDATE inventory SET quantity = quantity + :quantity  WHERE sku = :sku")
-	int adjustStockBySku(String sku, int quantity);
+	void adjustStockBySku(String sku, int quantity);
 
 }

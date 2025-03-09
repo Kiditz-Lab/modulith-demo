@@ -1,11 +1,17 @@
 package com.example.demo.inventories;
 
+import com.example.demo.orders.LineItemDto;
 import com.example.demo.orders.OrderPlacedEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -13,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 class Inventories {
 	private final InventoryRepository repository;
+	private final ApplicationEventPublisher publisher;
 
 	InventoryDto updateStock(UpdateStockCommand command) {
 		var inventory = repository.findBySku(command.sku()).orElse(new Inventory(null, command.sku(), command.quantity()));
@@ -33,10 +40,23 @@ class Inventories {
 	}
 
 	@ApplicationModuleListener
-	void on(OrderPlacedEvent event) throws InterruptedException {
-		log.info("Start event {}", event);
-		Thread.sleep(10_000L);
-		log.info("End event {}", event);
+	void on(OrderPlacedEvent event) {
+		log.info("Start Event captured: {}", event);
+		try {
+
+			for (LineItemDto item : event.items()) {
+				var inventory = repository.findBySku(item.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
+				if (inventory.quantity() < item.quantity()) {
+					throw new InventoryException("Insufficient stock for sku %s".formatted(item.sku()));
+				}
+				adjustStock(new AdjustStockCommand(item.sku(), item.quantity() * -1));
+			}
+			publisher.publishEvent(new StockReservedEvent(event.orderId(), event.items().stream().map(LineItemDto::sku).collect(Collectors.toSet())));
+		} catch (InventoryException e) {
+			publisher.publishEvent(new StockReservedEventFailed(event.orderId(), e.getMessage()));
+		}
+
+		log.info("End Event captured: {}", event);
 	}
 
 }

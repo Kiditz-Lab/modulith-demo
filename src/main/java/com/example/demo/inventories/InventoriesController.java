@@ -15,7 +15,7 @@ public class InventoriesController {
 	}
 
 	@PatchMapping("/adjust")
-	InventoryDto adjustStock(@RequestBody UpdateStockCommand command) {
-		return inventories.updateStock(command);
+	InventoryDto adjustStock(@RequestBody AdjustStockCommand command) {
+		return inventories.adjustStock(command);
 	}
 }

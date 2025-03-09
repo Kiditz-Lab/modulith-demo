@@ -11,7 +11,7 @@ public class InventoryAmqpConfiguration {
 
     @Bean
     FanoutExchange inventoryExchange() {
-        return ExchangeBuilder.fanoutExchange(INVENTORY_FAILED_Q).build();
+        return ExchangeBuilder.fanoutExchange(INVENTORY_Q).build();
     }
 
     @Bean

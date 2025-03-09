@@ -47,6 +47,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
     runtimeOnly 'org.springframework.modulith:spring-modulith-events-amqp'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 //    runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
 
     // Unit test dependencies
@@ -55,6 +56,7 @@ dependencies {
     testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'net.datafaker:datafaker:2.4.2'
+
 
     // Integration test dependencies (separate)
 //    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.19.3'

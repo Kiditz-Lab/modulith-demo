@@ -15,7 +15,7 @@ class OrderController {
 	}
 
 	@PostMapping
-	void placeOrder(@RequestBody Order order) {
-		orders.placed(order);
+	void placeOrder(@RequestBody OrderPlacedCommand command) {
+		orders.placed(command);
 	}
 }

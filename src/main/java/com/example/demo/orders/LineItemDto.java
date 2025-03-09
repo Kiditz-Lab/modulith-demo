@@ -1,5 +1,5 @@
 package com.example.demo.orders;
 
-class LineItemDto {
+record LineItemDto(String sku, int quantity) {
 
 }

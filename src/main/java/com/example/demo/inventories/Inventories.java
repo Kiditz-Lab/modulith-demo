@@ -19,8 +19,7 @@ class Inventories {
 		if (inventory.id() == null) {
 			inventory = repository.save(inventory);
 		} else {
-			var res = repository.updateStockBySku(command.sku(), command.quantity());
-			log.info("Result: {}", res);
+			repository.updateStockBySku(command.sku(), command.quantity());
 			inventory = repository.findBySku(command.sku()).orElse(new Inventory(null, command.sku(), command.quantity()));
 		}
 		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
@@ -28,8 +27,7 @@ class Inventories {
 
 	InventoryDto adjustStock(AdjustStockCommand command) {
 		var inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
-		var res = repository.adjustStockBySku(command.sku(), command.quantity());
-		log.info("Result: {}", res);
+		repository.adjustStockBySku(command.sku(), command.quantity());
 		inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
 		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
 	}

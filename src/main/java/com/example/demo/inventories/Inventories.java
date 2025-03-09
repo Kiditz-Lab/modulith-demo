@@ -1,7 +1,11 @@
 package com.example.demo.inventories;
 
+import com.example.demo.orders.OrderPlacedEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 class Inventories {
 	private final InventoryRepository repository;
-
 
 	InventoryDto updateStock(UpdateStockCommand command) {
 		var inventory = repository.findBySku(command.sku()).orElse(new Inventory(null, command.sku(), command.quantity()));
@@ -32,4 +35,12 @@ class Inventories {
 		inventory = repository.findBySku(command.sku()).orElseThrow(() -> new InventoryException("Sku not found"));
 		return new InventoryDto(inventory.id(), inventory.sku(), inventory.quantity());
 	}
+
+	@ApplicationModuleListener
+	void on(OrderPlacedEvent event) throws InterruptedException {
+		log.info("Start event {}", event);
+		Thread.sleep(10_000L);
+		log.info("End event {}", event);
+	}
+
 }

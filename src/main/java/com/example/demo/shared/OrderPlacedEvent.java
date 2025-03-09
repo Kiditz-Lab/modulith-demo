@@ -1,6 +1,8 @@
 package com.example.demo.shared;
 
-import java.util.Set;
+import org.springframework.modulith.events.Externalized;
 
+import java.util.Set;
+@Externalized(Constant.ORDERS)
 public record OrderPlacedEvent(Long orderId, Set<LineItemDto> items) {
 }

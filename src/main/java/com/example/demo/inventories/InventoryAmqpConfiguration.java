@@ -10,13 +10,8 @@ public class InventoryAmqpConfiguration {
     public static final String INVENTORY_FAILED_Q = "inventory_failed";
 
     @Bean
-    Binding inventoryBinding(Exchange exchange, Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(INVENTORY_Q).noargs();
-    }
-
-    @Bean
-    Exchange inventoryExchange() {
-        return ExchangeBuilder.directExchange(INVENTORY_Q).build();
+    FanoutExchange inventoryExchange() {
+        return ExchangeBuilder.fanoutExchange(INVENTORY_FAILED_Q).build();
     }
 
     @Bean
@@ -25,17 +20,22 @@ public class InventoryAmqpConfiguration {
     }
 
     @Bean
-    Binding inventoryFailedBinding(Exchange exchange, Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(INVENTORY_FAILED_Q).noargs();
+    Binding inventoryBinding(FanoutExchange inventoryExchange, Queue inventoryQueue) {
+        return BindingBuilder.bind(inventoryQueue).to(inventoryExchange);
     }
 
     @Bean
-    Exchange inventoryFailedExchange() {
-        return ExchangeBuilder.directExchange(INVENTORY_FAILED_Q).build();
+    FanoutExchange inventoryFailedExchange() {
+        return ExchangeBuilder.fanoutExchange(INVENTORY_FAILED_Q).build();
     }
 
     @Bean
     Queue inventoryFailedQueue() {
         return QueueBuilder.durable(INVENTORY_FAILED_Q).build();
+    }
+
+    @Bean
+    Binding inventoryFailedBinding(FanoutExchange inventoryFailedExchange, Queue inventoryFailedQueue) {
+        return BindingBuilder.bind(inventoryFailedQueue).to(inventoryFailedExchange);
     }
 }

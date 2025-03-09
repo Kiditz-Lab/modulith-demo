@@ -1,10 +1,12 @@
 package com.example.demo.inventories;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inventories")
+@RequestMapping("/api/v1/inventories")
+@Tag(name = "Inventory")
 @RequiredArgsConstructor
 public class InventoriesController {
 	private final Inventories inventories;
